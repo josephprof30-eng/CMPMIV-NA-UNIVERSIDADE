@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#123c86">
+<title>CMPMIV na Universidade</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f6fb;color:#172033}
+header{background:linear-gradient(135deg,#123c86,#1769d2);color:#fff;padding:20px 16px}
+h1{margin:0;font-size:23px}header p{margin:5px 0 0;font-size:13px;opacity:.9}
+nav{background:#fff;border-bottom:1px solid #e4e7ec;display:flex;gap:5px;overflow:auto;padding:8px;position:sticky;top:0;z-index:2}
+nav button{border:0;background:transparent;padding:10px;border-radius:8px;font-weight:bold;color:#475467;white-space:nowrap}
+nav button.active{background:#eaf2ff;color:#123c86}.wrap{max-width:1100px;margin:auto;padding:14px}
+.page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.card{background:#fff;border:1px solid #e4e7ec;border-radius:13px;padding:15px;margin-bottom:14px;box-shadow:0 3px 12px #1018280a}
+.stat span{font-size:12px;color:#667085}.stat b{display:block;font-size:25px;margin-top:4px}
+h2{font-size:17px;margin:0 0 12px}label{font-size:12px;font-weight:bold;display:block;margin:8px 0 4px}
+input,select,textarea{width:100%;padding:10px;border:1px solid #d0d5dd;border-radius:8px;background:#fff;font-size:14px}textarea{min-height:65px}
+button.btn{border:0;border-radius:8px;padding:10px 13px;font-weight:bold}.primary{background:#1769d2;color:#fff}.danger{background:#fff0f0;color:#c53030}.light{background:#eef4ff;color:#123c86}
+.actions{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}.scroll{overflow:auto}
+table{width:100%;border-collapse:collapse}th,td{padding:8px 6px;border-bottom:1px solid #e4e7ec;text-align:left;font-size:12px}
+.badge{display:inline-block;padding:4px 7px;border-radius:99px;font-size:10px;font-weight:bold}.ok{background:#e8f7ef;color:#16834b}.near{background:#fff7df;color:#b7791f}.no{background:#fff0f0;color:#c53030}
+.result{padding:13px;background:#f8fafc;border:1px solid #e4e7ec;border-radius:9px;margin-top:10px}.empty{text-align:center;color:#667085;padding:25px}
+.notice{background:#fff8e6;color:#7a4b00;padding:10px;border-radius:9px;font-size:11px;margin-top:10px}
+@media(max-width:750px){.grid{grid-template-columns:1fr 1fr}.grid2,.grid3{grid-template-columns:1fr}}
+</style></head>
+<body>
+<header><div class="wrap"><h1>🎓 CMPMIV na Universidade</h1><p>Monitor de PSS • SIS • UEA • ENEM</p></div></header>
+<nav>
+<button class="active" onclick="pg('home',this)">Dashboard</button>
+<button onclick="pg('alunos',this)">Alunos</button>
+<button onclick="pg('cortes',this)">Notas de corte</button>
+<button onclick="pg('sim',this)">Simulador</button>
+<button onclick="pg('acom',this)">Acompanhamento</button>
+</nav>
+<main class="wrap">
+<section id="home" class="page active">
+<div class="grid">
+<div class="card stat"><span>Alunos</span><b id="a">0</b></div>
+<div class="card stat"><span>Cursos monitorados</span><b id="c">0</b></div>
+<div class="card stat"><span>Dentro da corte</span><b id="d">0</b></div>
+<div class="card stat"><span>Precisam melhorar</span><b id="m">0</b></div>
+</div>
+<div class="card"><h2>Resumo da turma</h2><div id="resumo"></div>
+<div class="notice">As notas de corte cadastradas são referências. Confirme sempre o edital e o resultado oficial da instituição.</div></div>
+</section>
+
+<section id="alunos" class="page"><div class="grid2">
+<div class="card"><h2>➕ Novo aluno</h2>
+<label>Nome</label><input id="nome">
+<label>Turma</label><input id="turma" placeholder="3º ano A">
+<label>ENEM</label><input id="enem" type="number" step=".01">
+<label>PSS</label><input id="pss" type="number" step=".01">
+<label>SIS</label><input id="sis" type="number" step=".01">
+<label>UEA</label><input id="uea" type="number" step=".01">
+<label>Curso de interesse</label><input id="interesse" placeholder="Ex.: Medicina">
+<div class="actions"><button class="btn primary" onclick="addAluno()">Cadastrar</button></div>
+</div>
+<div class="card"><h2>👨‍🎓 Alunos</h2><div class="scroll" id="lista"></div></div>
+</div></section>
+
+<section id="cortes" class="page"><div class="card"><h2>🎯 Nova nota de corte</h2>
+<div class="grid3"><div><label>Processo</label><select id="proc"><option>ENEM</option><option>PSS</option><option>SIS</option><option>UEA</option></select></div>
+<div><label>Curso</label><input id="curso"></div><div><label>Instituição</label><input id="inst"></div>
+<div><label>Campus</label><input id="campus"></div><div><label>Modalidade</label><input id="mod"></div><div><label>Nota de corte</label><input id="corte" type="number" step=".01"></div></div>
+<div class="actions"><button class="btn primary" onclick="addCorte()">Adicionar corte</button></div></div>
+<div class="card"><h2>📋 Cortes cadastradas</h2><div class="scroll" id="cortesLista"></div></div></section>
+
+<section id="sim" class="page"><div class="card"><h2>🔎 Simulador</h2>
+<div class="grid3"><div><label>Aluno</label><select id="sa"></select></div><div><label>Processo</label><select id="sp"><option>ENEM</option><option>PSS</option><option>SIS</option><option>UEA</option></select></div><div><label>Curso/corte</label><select id="sc"></select></div></div>
+<div class="result" id="resultado">Selecione os dados.</div></div></section>
+
+<section id="acom" class="page"><div class="card"><h2>📈 Acompanhamento</h2><div class="scroll" id="acomp"></div></div></section>
+</main>
+<script>
+let alunos=JSON.parse(localStorage.getItem('cmpmiv_alunos')||'[]');
+let cortes=JSON.parse(localStorage.getItem('cmpmiv_cortes')||'[]');
+const $=id=>document.getElementById(id), n=id=>parseFloat($(id).value)||0, v=id=>$(id).value.trim();
+function esc(x){return String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function save(){localStorage.setItem('cmpmiv_alunos',JSON.stringify(alunos));localStorage.setItem('cmpmiv_cortes',JSON.stringify(cortes));render()}
+function pg(id,b){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');render()}
+function addAluno(){if(!v('nome'))return alert('Informe o nome.');alunos.push({id:Date.now(),nome:v('nome'),turma:v('turma'),interesse:v('interesse'),notas:{ENEM:n('enem'),PSS:n('pss'),SIS:n('sis'),UEA:n('uea')}});['nome','turma','interesse','enem','pss','sis','uea'].forEach(x=>$(x).value='');save()}
+function addCorte(){if(!v('curso')||!n('corte'))return alert('Informe curso e corte.');cortes.push({id:Date.now(),proc:v('proc'),curso:v('curso'),inst:v('inst'),campus:v('campus'),mod:v('mod'),corte:n('corte')});['curso','inst','campus','mod','corte'].forEach(x=>$(x).value='');save()}
+function badge(x,c){return x>=c?'<span class="badge ok">DENTRO</span>':x>=c-5?'<span class="badge near">PRÓXIMO</span>':'<span class="badge no">ABAIXO</span>'}
+function delA(id){alunos=alunos.filter(x=>x.id!=id);save()}function delC(id){cortes=cortes.filter(x=>x.id!=id);save()}
+function render(){
+$('a').textContent=alunos.length;$('c').textContent=cortes.length;let d=0,m=0;
+alunos.forEach(s=>cortes.forEach(c=>{let x=s.notas[c.proc]||0;if(x) x>=c.corte?d++:m++}));
+$('d').textContent=d;$('m').textContent=m;
+$('lista').innerHTML=alunos.length?`<table><tr><th>Aluno</th><th>Turma</th><th>Interesse</th><th>Notas</th><th></th></tr>${alunos.map(s=>`<tr><td><b>${esc(s.nome)}</b></td><td>${esc(s.turma)}</td><td>${esc(s.interesse)||'—'}</td><td>E:${s.notas.ENEM||'—'} P:${s.notas.PSS||'—'} S:${s.notas.SIS||'—'} U:${s.notas.UEA||'—'}</td><td><button class="btn danger" onclick="delA(${s.id})">Excluir</button></td></tr>`).join('')}</table>`:'<div class="empty">Nenhum aluno.</div>';
+$('cortesLista').innerHTML=cortes.length?`<table><tr><th>Processo</th><th>Curso</th><th>Instituição</th><th>Campus</th><th>Modalidade</th><th>Corte</th><th></th></tr>${cortes.map(c=>`<tr><td>${c.proc}</td><td><b>${esc(c.curso)}</b></td><td>${esc(c.inst)||'—'}</td><td>${esc(c.campus)||'—'}</td><td>${esc(c.mod)||'—'}</td><td>${c.corte}</td><td><button class="btn danger" onclick="delC(${c.id})">Excluir</button></td></tr>`).join('')}</table>`:'<div class="empty">Nenhuma corte.</div>';
+$('resumo').innerHTML=alunos.length?`<table><tr><th>Aluno</th><th>Curso</th><th>Comparações</th></tr>${alunos.map(s=>{let q=cortes.filter(c=>(s.notas[c.proc]||0)>0);let z=q.filter(c=>s.notas[c.proc]>=c.corte).length;return `<tr><td>${esc(s.nome)}</td><td>${esc(s.interesse)||'—'}</td><td>${z}/${q.length}</td></tr>`}).join('')}</table>`:'<div class="empty">Cadastre alunos para começar.</div>';
+let sa=$('sa'),old=sa.value;sa.innerHTML='<option value="">Selecione...</option>'+alunos.map(s=>`<option value="${s.id}">${esc(s.nome)}</option>`).join('');if(old)sa.value=old;
+let sc=$('sc'),oldc=sc.value;sc.innerHTML='<option value="">Selecione...</option>'+cortes.map(c=>`<option value="${c.id}">${c.proc} • ${esc(c.curso)} • ${c.corte}</option>`).join('');if(oldc)sc.value=oldc;
+$('acomp').innerHTML=alunos.length&&cortes.length?`<table><tr><th>Aluno</th><th>Curso</th><th>Nota</th><th>Corte</th><th>Status</th></tr>${alunos.flatMap(s=>cortes.filter(c=>(s.notas[c.proc]||0)>0).map(c=>`<tr><td>${esc(s.nome)}</td><td>${c.proc} • ${esc(c.curso)}</td><td>${s.notas[c.proc]}</td><td>${c.corte}</td><td>${badge(s.notas[c.proc],c.corte)}</td></tr>`)).join('')}</table>`:'<div class="empty">Cadastre alunos e cortes.</div>';
+}
+function sim(){let s=alunos.find(x=>x.id==$('sa').value),c=cortes.find(x=>x.id==$('sc').value);if(!s||!c){$('resultado').textContent='Selecione os dados.';return}let x=s.notas[c.proc]||0;$('resultado').innerHTML=`<b>${esc(s.nome)}</b><br>${c.proc} • ${esc(c.curso)}<br><br>Nota: <b>${x}</b> • Corte: <b>${c.corte}</b><br>Diferença: <b>${(x-c.corte).toFixed(2)}</b><br><br>${badge(x,c.corte)}<br><small>Comparação matemática; não garante aprovação.</small>`}
+$('sa').addEventListener('change',sim);$('sc').addEventListener('change',sim);render();
+</script></body></html>
